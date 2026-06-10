@@ -1,0 +1,827 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>合规智训 · 云端成绩系统 | 高路公司</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #f1f5f9 0%, #e6edf4 100%);
+            color: #0f2b3d;
+            padding: 2rem 1.5rem;
+            min-height: 100vh;
+        }
+        .app-container { max-width: 1440px; margin: 0 auto; }
+        
+        /* hero模块 */
+        .hero {
+            background: rgba(255,255,255,0.82);
+            backdrop-filter: blur(12px);
+            border-radius: 2.5rem;
+            padding: 1.8rem 2.2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 20px 35px -12px rgba(0,0,0,0.1);
+            border: 1px solid rgba(255,255,255,0.7);
+            position: relative;
+            overflow: hidden;
+        }
+        .hero::before {
+            content: "⚖️📋";
+            font-size: 150px;
+            opacity: 0.05;
+            position: absolute;
+            right: -20px;
+            bottom: -40px;
+            pointer-events: none;
+        }
+        .hero h1 {
+            font-size: 2rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #1e3a5f, #2b6a9f);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            display: inline-flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .hero-tag {
+            font-size: 0.85rem;
+            background: #eef2ff;
+            display: inline-block;
+            padding: 0.2rem 1rem;
+            border-radius: 40px;
+            font-weight: 600;
+            color: #1e4a76;
+            margin-top: 8px;
+        }
+        
+        /* 主要培训&测评卡片区 (宽度与hero完全对齐) */
+        .training-card, .quiz-card {
+            background: white;
+            border-radius: 2rem;
+            box-shadow: 0 12px 28px rgba(0,0,0,0.06);
+            padding: 1.6rem 2rem;
+            border: 1px solid #eef2f9;
+            margin-bottom: 2rem;
+            width: 100%;
+        }
+        .info-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+        .info-block {
+            background: #fafcff;
+            border-radius: 1.2rem;
+            padding: 1rem 1.2rem;
+            border-left: 4px solid #3b82f6;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.02);
+        }
+        .info-block h4 {
+            font-size: 0.9rem;
+            font-weight: 700;
+            margin-bottom: 0.6rem;
+            color: #1e3a5f;
+        }
+        .info-block p, .info-block li {
+            font-size: 0.85rem;
+            line-height: 1.45;
+            color: #2c4e6e;
+        }
+        .info-block ul {
+            margin-left: 1.2rem;
+        }
+        .section-title {
+            font-size: 1.3rem;
+            font-weight: 700;
+            border-left: 5px solid #3b82f6;
+            padding-left: 1rem;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .training-content {
+            background: #fafcff;
+            border-radius: 1.2rem;
+            padding: 1rem 1.2rem;
+            line-height: 1.6;
+            font-size: 0.9rem;
+            border: 1px solid #e9edf2;
+        }
+        .question-item {
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid #eef2f6;
+        }
+        .question-text {
+            font-weight: 700;
+            font-size: 0.98rem;
+            margin-bottom: 0.9rem;
+        }
+        .option-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.65rem;
+            margin: 0.8rem 0 0.2rem;
+        }
+        .option-label {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            background: #ffffff;
+            padding: 0.45rem 0.9rem;
+            border-radius: 40px;
+            transition: all 0.15s;
+            border: 1px solid #e9edf2;
+        }
+        .option-label:hover { background: #eef3fc; border-color: #bdd4ff; }
+        input[type="radio"], input[type="checkbox"] {
+            width: 18px;
+            height: 18px;
+            accent-color: #2563eb;
+        }
+        textarea {
+            width: 100%;
+            border-radius: 1rem;
+            border: 1px solid #cfdfed;
+            padding: 0.8rem;
+            font-family: inherit;
+            font-size: 0.9rem;
+            resize: vertical;
+        }
+        .identity-section {
+            background: #fefce8;
+            border-radius: 1.2rem;
+            padding: 1rem 1.2rem;
+            margin: 1rem 0 1.2rem;
+            border: 1px solid #ffe6b3;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+            align-items: flex-end;
+        }
+        .identity-field {
+            flex: 1;
+            min-width: 150px;
+        }
+        .identity-field label {
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: #a16207;
+            display: block;
+            margin-bottom: 4px;
+        }
+        .identity-field input {
+            width: 100%;
+            padding: 8px 12px;
+            border-radius: 40px;
+            border: 1px solid #fed7aa;
+            background: white;
+            font-size: 0.85rem;
+        }
+        .submit-area {
+            margin-top: 1rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+        .btn {
+            border: none;
+            background: #1e3a5f;
+            color: white;
+            font-weight: 600;
+            padding: 0.7rem 1.6rem;
+            border-radius: 60px;
+            cursor: pointer;
+            font-size: 0.85rem;
+            transition: 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .btn-primary { background: #2563eb; }
+        .btn-primary:hover { background: #1d4ed8; transform: scale(0.97); }
+        .btn-danger { background: #dc2626; }
+        .btn-danger:hover { background: #b91c1c; }
+        .score-badge {
+            background: #eef2ff;
+            padding: 0.45rem 1.2rem;
+            border-radius: 60px;
+            font-weight: 600;
+            color: #1e4a76;
+            font-size: 0.85rem;
+        }
+        
+        /* 创作者后台面板 (独立置于下方, 宽度与hero对齐) */
+        .admin-panel {
+            background: rgba(255,255,255,0.97);
+            border-radius: 2rem;
+            padding: 1.6rem;
+            box-shadow: 0 25px 40px -12px rgba(0,0,0,0.15);
+            border: 1px solid #cde3f5;
+            margin-top: 1rem;
+            width: 100%;
+        }
+        .admin-header {
+            font-weight: 800;
+            font-size: 1.2rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            border-bottom: 2px solid #dce5f0;
+            padding-bottom: 0.7rem;
+            margin-bottom: 1rem;
+        }
+        .score-list { max-height: 550px; overflow-y: auto; padding-right: 4px; }
+        .score-entry {
+            background: #f9fbfe;
+            border-radius: 1rem;
+            padding: 0.75rem;
+            margin-bottom: 0.7rem;
+            font-size: 0.8rem;
+            border-left: 4px solid #3b82f6;
+        }
+        .score-entry span { font-weight: 700; color: #075985; }
+        .empty-message {
+            color: #7f8c8d;
+            text-align: center;
+            padding: 2rem 0.5rem;
+            font-style: italic;
+        }
+        .admin-stats {
+            background: #eef3fc;
+            border-radius: 1rem;
+            padding: 0.6rem;
+            margin-top: 1rem;
+            text-align: center;
+            font-weight: 600;
+            font-size: 0.8rem;
+        }
+        .personal-score-card {
+            background: #fff6e5;
+            border-radius: 1.2rem;
+            padding: 0.7rem 1rem;
+            margin-top: 1rem;
+            border: 1px solid #ffe2b5;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            font-size: 0.85rem;
+        }
+        .creator-entrance {
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            z-index: 1000;
+            background: #1e2f3f;
+            color: white;
+            border-radius: 60px;
+            padding: 10px 22px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            cursor: pointer;
+            box-shadow: 0 8px 18px rgba(0,0,0,0.12);
+            border: none;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .creator-entrance:hover { background: #2c4f6e; transform: scale(1.02); }
+        .cloud-status-bar {
+            background: #eef2ff;
+            border-radius: 1rem;
+            padding: 0.5rem 1rem;
+            margin-bottom: 1.5rem;
+            font-size: 0.75rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 8px;
+            border: 1px solid #cbdff2;
+            color: #1e3a5f;
+        }
+        .sync-status-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: white;
+            border-radius: 60px;
+            padding: 0.2rem 0.8rem;
+            font-weight: 500;
+        }
+        .footer-note { margin-top: 2rem; text-align: center; font-size: 0.7rem; color: #5a6e7c; }
+        
+        /* toast 消息提示样式 */
+        .toast-msg {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #1f2937e6;
+            backdrop-filter: blur(8px);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 40px;
+            font-size: 0.85rem;
+            font-weight: 500;
+            z-index: 1100;
+            transition: opacity 0.2s ease;
+            opacity: 0;
+            pointer-events: none;
+            white-space: nowrap;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+        }
+        
+        @media (max-width: 880px) {
+            .info-grid { grid-template-columns: 1fr; }
+            .toast-msg { white-space: normal; max-width: 90%; text-align: center; }
+            .hero h1 { font-size: 1.5rem; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="app-container">
+    <!-- 云端状态栏 (始终展示) -->
+    <div class="cloud-status-bar" id="cloudStatusBar">
+        <div><i class="fas fa-cloud-arrow-up"></i> <strong>云端存储已启用</strong> 
+            <span id="binIdShortDisplay" style="font-family: monospace; background: #ffffff80; padding: 2px 8px; border-radius: 30px;"></span>
+        </div>
+        <div id="syncStatusDisplay" class="sync-status-badge"><i class="fas fa-sync-alt"></i> 初始化连接中...</div>
+    </div>
+
+    <!-- Hero 模块 (上方统一卡片) -->
+    <div class="hero">
+        <h1><i class="fas fa-cloud-upload-alt"></i> 高路公司 · 合规智训</h1>
+        <div class="hero-tag">
+            <i class="fas fa-database"></i> 2026年6月 | 岗位职责专训
+        </div>
+        <p style="margin-top: 12px; font-size: 0.8rem;">
+            <i class="fas fa-globe"></i> 云端成绩实时同步 | 全员合规能力提升
+        </p>
+    </div>
+
+    <!-- 主要培训 + 测评区域 (宽度与上方hero完全一致) -->
+    <div class="main-content-area">
+        <!-- 培训卡片 -->
+        <div class="training-card">
+            <div class="section-title"><i class="fas fa-book-open"></i> 本月合规培训要点</div>
+            <div class="training-content" id="trainingMaterial"></div>
+        </div>
+        
+        <!-- 测评卡片（含培训说明&答题规则 & 题目） -->
+        <div class="quiz-card">
+            <div class="info-grid">
+                <div class="info-block">
+                    <h4><i class="fas fa-clipboard-list"></i>  培训说明</h4>
+                    <p><strong>培训对象：</strong>各单位合规人员</p>
+                    <p><strong>培训形式：</strong>线上自学 + 随堂测试</p>
+                    <p><strong>完成时限：</strong>6月30日 24:00 前</p>
+                    <p><strong>合格标准：</strong>80 分及以上为合格</p>
+                </div>
+                <div class="info-block">
+                    <h4><i class="fas fa-exclamation-triangle"></i>  答题规则</h4>
+                    <ul>
+                        <li>共 5题，满分 100 分</li>
+                        <li>单选题2 题，多选题 2 题，主观题 1 题</li>
+                        <li>每人限答 1 次，答错不得分</li>
+                        <li>提交后不可修改，请谨慎作答</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="section-title"><i class="fas fa-pen-ruler"></i> AI 智能测评</div>
+            <div id="questionsContainer">加载考题中...</div>
+            
+            <!-- 单位和姓名填写模块 -->
+            <div class="identity-section">
+                <div class="identity-field">
+                    <label><i class="fas fa-building"></i> 所属单位</label>
+                    <input type="text" id="userCompany" placeholder="例：XX指挥部/XX公司" autocomplete="off">
+                </div>
+                <div class="identity-field">
+                    <label><i class="fas fa-user"></i> 姓名</label>
+                    <input type="text" id="userName" placeholder="真实姓名" autocomplete="off">
+                </div>
+            </div>
+
+            <div class="submit-area">
+                <button class="btn btn-primary" id="submitQuizBtn"><i class="fas fa-cloud-upload-alt"></i> 提交答卷 · 云端保存</button>
+                <div id="latestScoreDisplay" class="score-badge"><i class="fas fa-chart-simple"></i> 待测评</div>
+            </div>
+            <div id="personalScoreArea" class="personal-score-card" style="display: none;">
+                <span><i class="fas fa-id-card"></i> 当前学员成绩：</span>
+                <strong id="personalScoreValue" style="font-size:1.1rem;">--</strong>
+            </div>
+        </div>
+    </div>
+
+    <!-- 创作者后台面板 (独立放置, 宽度与上方模块一致, 默认隐藏) -->
+    <div id="adminPanelWrapper" style="display: none;">
+        <div class="admin-panel">
+            <div class="admin-header">
+                <i class="fas fa-chalkboard-user"></i> 创作者后台 · 全员成绩
+                <i class="fas fa-cloud" style="margin-left:auto; font-size:0.8rem;"></i>
+            </div>
+            <div id="scoreBoardList" class="score-list">
+                <div class="empty-message"><i class="fas fa-cloud-download-alt"></i> 从云端加载中...</div>
+            </div>
+            <div id="adminStats" class="admin-stats"></div>
+            <div style="display: flex; gap: 8px; margin-top: 12px;">
+                <button id="refreshFromCloudBtn" class="btn" style="background:#6b7280; padding:6px 12px; font-size:0.7rem;"><i class="fas fa-sync-alt"></i> 刷新云端数据</button>
+                <button id="clearLocalCacheBtn" class="btn" style="background:#ef4444; padding:6px 12px; font-size:0.7rem;"><i class="fas fa-trash"></i> 重置本机标识</button>
+            </div>
+        </div>
+    </div>
+    
+    <div class="footer-note">
+        <i class="fas fa-shield-heart"></i> 创作者密码: 2026heguipeixun | 数据存储于 JSONBin | 提交后自动同步云端
+    </div>
+</div>
+
+<button id="creatorModeBtn" class="creator-entrance"><i class="fas fa-crown"></i> 创作者入口 · 云端汇总</button>
+<div id="toastMsg" class="toast-msg"></div>
+
+<script>
+    // ===================== 预设 JSONBin ID (不可修改) =====================
+    const PRESET_BIN_ID = "6a290088f5f4af5e29d63dda".trim();
+    const PRESET_API_KEY = "";   
+    
+    // 培训内容 (岗位职责)
+    const trainingContentData = {
+        title: "2026年6月 合规人员岗位职责",
+        sections: [
+            "📘 制度建设与完善：制定、修订公司合规管理制度与操作流程，确保符合法律法规及行业监管要求。",
+            "📌 合规审查与把关：对业务合同、合作方案、业务流程等进行合规性审核，识别并防范违规风险。",
+            "⚙️ 合规监督检查：定期开展合规检查与自查，监督各部门制度执行情况，发现问题并督促整改。",
+            "🔐 合规培训与宣贯：组织职工开展法律法规和合规文化培训，提升全员合规意识。",
+            "🧾 违规事件处置与报告：受理合规举报，参与违规事件调查，按规定向高路公司及监管部门报送合规报告。"
+        ],
+        keyHighlights: "合规人员需紧扣招投标、安全生产、合同履约及企业资质四大核心风险，保障工程项目全周期合法合规运营。"
+    };
+
+    // 全局变量
+    let JSONBIN_BIN_ID = "";
+    let JSONBIN_API_KEY = "";
+    let allSubmissions = [];
+    let currentQuestions = [];
+    let currentTraineeKey = localStorage.getItem("current_trainee_key") || "";
+    let currentCompany = "";
+    let currentName = "";
+    let currentTraineeLastScore = null;
+    let isCreatorModeActive = false;
+
+    // 强制预设配置
+    function enforcePresetConfig() {
+        if (!PRESET_BIN_ID || PRESET_BIN_ID.trim() === "") {
+            updateStatusUI("未预设 Bin ID，云端同步不可用", "error");
+            return false;
+        }
+        JSONBIN_BIN_ID = PRESET_BIN_ID;
+        JSONBIN_API_KEY = PRESET_API_KEY;
+        localStorage.removeItem("jsonbin_bin_id");
+        localStorage.removeItem("jsonbin_api_key");
+        const shortId = JSONBIN_BIN_ID.length > 12 ? JSONBIN_BIN_ID.substring(0,10)+"..." : JSONBIN_BIN_ID;
+        const binDisplay = document.getElementById("binIdShortDisplay");
+        if (binDisplay) binDisplay.innerText = `Bin: ${shortId}`;
+        updateStatusUI("正在连接云端...", "loading");
+        return true;
+    }
+
+    function updateStatusUI(msg, type = "info") {
+        const statusSpan = document.getElementById("syncStatusDisplay");
+        if (statusSpan) {
+            let icon = '<i class="fas fa-info-circle"></i>';
+            if (type === "loading") icon = '<i class="fas fa-spinner fa-pulse"></i>';
+            else if (type === "success") icon = '<i class="fas fa-check-circle"></i>';
+            else if (type === "error") icon = '<i class="fas fa-exclamation-triangle"></i>';
+            statusSpan.innerHTML = `${icon} ${msg}`;
+        }
+    }
+
+    // JSONBin API
+    async function fetchBinData() {
+        if (!JSONBIN_BIN_ID) return null;
+        try {
+            const url = `https://api.jsonbin.io/v3/b/${JSONBIN_BIN_ID}/latest`;
+            const headers = { "Content-Type": "application/json" };
+            if (JSONBIN_API_KEY) headers["X-Master-Key"] = JSONBIN_API_KEY;
+            const response = await fetch(url, { headers });
+            if (!response.ok) throw new Error(`HTTP ${response.status}`);
+            const data = await response.json();
+            const record = data.record;
+            return (record && record.compliance_scores) ? record.compliance_scores : [];
+        } catch (error) {
+            console.error(error);
+            showToast("云端读取失败: "+error.message, 2000);
+            return null;
+        }
+    }
+
+    async function updateBinData(scoresArray) {
+        if (!JSONBIN_BIN_ID) return false;
+        try {
+            const url = `https://api.jsonbin.io/v3/b/${JSONBIN_BIN_ID}`;
+            const headers = { "Content-Type": "application/json", "X-Bin-Versioning": "false" };
+            if (JSONBIN_API_KEY) headers["X-Master-Key"] = JSONBIN_API_KEY;
+            const payload = { compliance_scores: scoresArray };
+            const response = await fetch(url, { method: "PUT", headers, body: JSON.stringify(payload) });
+            if (!response.ok) throw new Error(`HTTP ${response.status}`);
+            showToast("✅ 成绩已同步至云端", 1500);
+            updateStatusUI("已同步", "success");
+            return true;
+        } catch (error) {
+            showToast("云端同步失败: "+error.message, 2000);
+            updateStatusUI("同步失败", "error");
+            return false;
+        }
+    }
+
+    async function loadFromCloudAndSync() {
+        if (!JSONBIN_BIN_ID) return false;
+        updateStatusUI("加载云端数据...", "loading");
+        const cloudScores = await fetchBinData();
+        if (cloudScores !== null) {
+            allSubmissions = cloudScores;
+            localStorage.setItem("compliance_local_backup", JSON.stringify(allSubmissions));
+            updateStatusUI(`已同步 ${allSubmissions.length} 条记录`, "success");
+            if (isCreatorModeActive) updateAdminPanel();
+            return true;
+        } else if (cloudScores === null && allSubmissions.length === 0) {
+            allSubmissions = [];
+            updateStatusUI("云端无数据，待首次提交", "info");
+            if (isCreatorModeActive) updateAdminPanel();
+        }
+        return false;
+    }
+
+    async function commitScoreToCloud(record) {
+        const existingIdx = allSubmissions.findIndex(s => s.uniqueKey === record.uniqueKey);
+        if (existingIdx !== -1) allSubmissions[existingIdx] = record;
+        else allSubmissions.unshift(record);
+        const success = await updateBinData(allSubmissions);
+        if (success) {
+            localStorage.setItem("compliance_local_backup", JSON.stringify(allSubmissions));
+            if (isCreatorModeActive) updateAdminPanel();
+        } else {
+            localStorage.setItem("compliance_local_backup", JSON.stringify(allSubmissions));
+        }
+        return success;
+    }
+
+    async function refreshAdminFromCloud() {
+        if (!isCreatorModeActive) return;
+        await loadFromCloudAndSync();
+    }
+
+    // 生成考题 (满分100)
+    function generateDynamicQuestions() {
+        return [
+            { id: "q1", type: "single", text: "合规审查的主要目的是？", options: ["A. 提高业务审批速度", "B. 确保经营活动符合法律法规及内部制度", "C. 减少员工数量", "D. 替代外部律师意见"], correct: "B", score: 15 },
+            { id: "q2", type: "single", text: "合规绩效考核的核心导向是？", options: ["A. 只看业务规模", "B. 个人人际关系", "C. 合规风险管控效果", "D. 部门执行效率"], correct: "C", score: 15 },
+            { id: "q3", type: "multi", text: "合规人员应具备的基本素质包括？", options: ["A. 熟悉相关法律法规", "B. 良好的沟通协调能力", "C. 独立判断能力", "D. 回避风险的责任意识"], correct: ["A", "B", "C", "D"], score: 20 },
+            { id: "q4", type: "multi", text: "下列属于合规风险类型的有？", options: ["法律合规风险", "监管处罚风险", "声誉风险", "操作风险"], correct: ["法律合规风险", "监管处罚风险", "声誉风险", "操作风险"], score: 20 },
+            { id: "q5", type: "essay", text: "结合培训内容，当合规人员在审查中发现业务流程存在系统性合规缺陷时，应履行哪些基本职责？请简要说明处置原则和报告路径。（50字以上）", correctKeywords: ["风险", "合规", "整改", "措施"], maxScore: 30, score: 30 }
+        ];
+    }
+
+    function renderQuizUI(questions) {
+        const container = document.getElementById('questionsContainer');
+        if (!questions.length) { container.innerHTML = '<div>试题生成失败</div>'; return; }
+        let html = '';
+        questions.forEach((q, idx) => {
+            html += `<div class="question-item">`;
+            html += `<div class="question-text"><strong>${idx+1}. ${q.text}</strong> <span style="font-size:0.7rem; background:#e9eff8; border-radius:30px; padding:2px 10px;">${q.type==='essay'?'主观题':(q.type==='multi'?'多选题':'单选题')} ${q.score}分</span></div>`;
+            if (q.type === 'single' || q.type === 'multi') {
+                const inputType = q.type === 'single' ? 'radio' : 'checkbox';
+                html += `<div class="option-group">`;
+                q.options.forEach(opt => {
+                    html += `<label class="option-label"><input type="${inputType}" name="q_${q.id}" value="${opt.split('.')[0]}"> <span>${opt}</span></label>`;
+                });
+                html += `</div>`;
+            } else {
+                html += `<textarea rows="3" placeholder="请输入见解..." class="essay-textarea"></textarea>`;
+            }
+            html += `</div>`;
+        });
+        container.innerHTML = html;
+    }
+
+    function collectAnswers() {
+        const answers = {};
+        currentQuestions.forEach(q => {
+            if (q.type === 'single') {
+                const selected = document.querySelector(`input[name="q_${q.id}"]:checked`);
+                answers[q.id] = selected ? selected.value : null;
+            } else if (q.type === 'multi') {
+                const checked = document.querySelectorAll(`input[name="q_${q.id}"]:checked`);
+                answers[q.id] = Array.from(checked).map(cb => cb.value);
+            } else {
+                const textarea = document.querySelector(`.question-item:last-child textarea`);
+                answers[q.id] = textarea ? textarea.value.trim() : '';
+            }
+        });
+        return answers;
+    }
+
+    function aiComputeScore(answers) {
+        let totalScore = 0;
+        currentQuestions.forEach(q => {
+            const userAns = answers[q.id];
+            let earned = 0;
+            if (q.type === 'single') {
+                earned = (userAns && userAns === q.correct) ? q.score : 0;
+            } else if (q.type === 'multi') {
+                if (userAns && Array.isArray(userAns)) {
+                    const correctSet = new Set(q.correct);
+                    let match = userAns.filter(a => correctSet.has(a)).length;
+                    earned = (match === q.correct.length && userAns.length === q.correct.length) ? q.score : (match / q.correct.length) * q.score;
+                    earned = Math.floor(earned);
+                }
+            } else if (q.type === 'essay') {
+                let text = userAns || '';
+                if (text.length > 0) {
+                    let kw = 0;
+                    q.correctKeywords.forEach(k => { if(text.toLowerCase().includes(k)) kw += 6; });
+                    let lenBonus = text.length >= 60 ? 8 : (text.length >= 30 ? 4 : 0);
+                    earned = Math.min(kw + lenBonus, q.score);
+                }
+            }
+            totalScore += earned;
+        });
+        return { totalScore, maxPossible: 100 };
+    }
+
+    async function onSubmit() {
+        const company = document.getElementById('userCompany').value.trim();
+        const name = document.getElementById('userName').value.trim();
+        if (!company || !name) {
+            showToast("请填写完整的单位名称和姓名", 2000);
+            return;
+        }
+        const uniqueKey = `${company}_${name}`;
+        const answers = collectAnswers();
+        let missing = false;
+        for (let q of currentQuestions) {
+            if (q.type !== 'essay' && (!answers[q.id] || (Array.isArray(answers[q.id]) && answers[q.id].length === 0))) {
+                missing = true; break;
+            }
+        }
+        if (missing) { showToast("请完成所有客观题", 1500); return; }
+        
+        const { totalScore, maxPossible } = aiComputeScore(answers);
+        const record = {
+            uniqueKey: uniqueKey,
+            company: company,
+            userName: name,
+            name: `${company} - ${name}`,
+            score: totalScore,
+            maxScore: maxPossible,
+            timestamp: new Date().toISOString(),
+            detailsPreview: `得分 ${totalScore}/${maxPossible}`
+        };
+        
+        localStorage.setItem("current_trainee_key", uniqueKey);
+        localStorage.setItem(`current_company_${uniqueKey}`, company);
+        localStorage.setItem(`current_name_${uniqueKey}`, name);
+        currentTraineeKey = uniqueKey;
+        currentCompany = company;
+        currentName = name;
+        currentTraineeLastScore = { score: totalScore, maxScore: maxPossible };
+        localStorage.setItem(`personal_score_${uniqueKey}`, JSON.stringify(currentTraineeLastScore));
+        
+        document.getElementById('latestScoreDisplay').innerHTML = `<i class="fas fa-chart-simple"></i> 本次得分: ${totalScore}/${maxPossible}`;
+        document.getElementById('personalScoreArea').style.display = 'flex';
+        document.getElementById('personalScoreValue').innerText = `${totalScore}/${maxPossible}`;
+        
+        await commitScoreToCloud(record);
+        showToast(`✅ ${company} ${name} 得分 ${totalScore}/${maxPossible}，已同步云端`, 2500);
+        if (isCreatorModeActive) await refreshAdminFromCloud();
+    }
+
+    function updateAdminPanel() {
+        const listContainer = document.getElementById('scoreBoardList');
+        const statsContainer = document.getElementById('adminStats');
+        if (!listContainer) return;
+        if (!allSubmissions.length) {
+            listContainer.innerHTML = `<div class="empty-message"><i class="fas fa-cloud-download-alt"></i> 暂无学员成绩，等待提交</div>`;
+            if(statsContainer) statsContainer.innerHTML = '';
+            return;
+        }
+        let html = '';
+        let totalSum = 0;
+        allSubmissions.forEach(rec => {
+            totalSum += rec.score;
+            const displayName = rec.company && rec.userName ? `${rec.company} ${rec.userName}` : (rec.name || "未知");
+            html += `<div class="score-entry">
+                        <div><i class="fas fa-user"></i> <span>${escapeHtml(displayName)}</span> · ${new Date(rec.timestamp).toLocaleString()}</div>
+                        <div style="font-size:1rem;"><strong>${rec.score} / ${rec.maxScore}</strong> 分</div>
+                    </div>`;
+        });
+        listContainer.innerHTML = html;
+        const avg = (totalSum / allSubmissions.length).toFixed(1);
+        statsContainer.innerHTML = `<i class="fas fa-chart-line"></i> 总人数: ${allSubmissions.length} | 平均分: ${avg}`;
+    }
+
+    function escapeHtml(str) { return str.replace(/[&<>]/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;'}[m])); }
+    function showToast(msg, time) { const t = document.getElementById('toastMsg'); t.textContent = msg; t.style.opacity = '1'; setTimeout(() => t.style.opacity = '0', time); }
+
+    function toggleCreatorMode() {
+        const panel = document.getElementById('adminPanelWrapper');
+        if (isCreatorModeActive) {
+            panel.style.display = 'none';
+            isCreatorModeActive = false;
+        } else {
+            const pwd = prompt("创作者密码:", "");
+            if (pwd === "2026heguipeixun") {
+                panel.style.display = 'block';
+                isCreatorModeActive = true;
+                refreshAdminFromCloud();
+            } else showToast("密码错误", 1200);
+        }
+    }
+
+    function renderTraining() {
+        const div = document.getElementById('trainingMaterial');
+        if (div) {
+            let html = `<div style="font-weight:700;">📘 ${trainingContentData.title}</div><ul>`;
+            trainingContentData.sections.forEach(s => { html += `<li style="margin:8px 0;">${s}</li>`; });
+            html += `</ul><div style="background:#eef3fc; border-radius:12px; padding:8px; margin-top:12px;">🎯 ${trainingContentData.keyHighlights}</div>`;
+            div.innerHTML = html;
+        }
+    }
+
+    function loadLocalBackup() {
+        const backup = localStorage.getItem("compliance_local_backup");
+        if (backup) { try { allSubmissions = JSON.parse(backup); } catch(e) {} }
+    }
+
+    function clearLocalIdentity() {
+        localStorage.removeItem("current_trainee_key");
+        document.getElementById('userCompany').value = '';
+        document.getElementById('userName').value = '';
+        currentTraineeKey = "";
+        currentTraineeLastScore = null;
+        document.getElementById('personalScoreArea').style.display = 'none';
+        document.getElementById('latestScoreDisplay').innerHTML = `<i class="fas fa-chart-simple"></i> 待测评`;
+        showToast("已清除本地身份，可重新答题", 1500);
+    }
+
+    function restoreUserIdentity() {
+        const key = localStorage.getItem("current_trainee_key");
+        if (key) {
+            const storedCompany = localStorage.getItem(`current_company_${key}`) || "";
+            const storedName = localStorage.getItem(`current_name_${key}`) || "";
+            if (storedCompany && storedName) {
+                document.getElementById('userCompany').value = storedCompany;
+                document.getElementById('userName').value = storedName;
+                const scoreData = localStorage.getItem(`personal_score_${key}`);
+                if (scoreData) {
+                    currentTraineeLastScore = JSON.parse(scoreData);
+                    document.getElementById('personalScoreArea').style.display = 'flex';
+                    document.getElementById('personalScoreValue').innerText = `${currentTraineeLastScore.score}/${currentTraineeLastScore.maxScore}`;
+                    document.getElementById('latestScoreDisplay').innerHTML = `<i class="fas fa-chart-simple"></i> 上次得分: ${currentTraineeLastScore.score}/${currentTraineeLastScore.maxScore}`;
+                }
+            }
+        }
+    }
+
+    async function init() {
+        renderTraining();
+        currentQuestions = generateDynamicQuestions();
+        renderQuizUI(currentQuestions);
+        const configOk = enforcePresetConfig();
+        if (!configOk) {
+            updateStatusUI("未预设 Bin ID，云端同步已禁用", "error");
+            document.getElementById('submitQuizBtn').disabled = true;
+            document.getElementById('submitQuizBtn').style.opacity = 0.5;
+        } else {
+            await loadFromCloudAndSync();
+            if (allSubmissions.length === 0) loadLocalBackup();
+        }
+        restoreUserIdentity();
+        
+        document.getElementById('submitQuizBtn').onclick = onSubmit;
+        document.getElementById('creatorModeBtn').onclick = toggleCreatorMode;
+        document.getElementById('refreshFromCloudBtn').onclick = () => refreshAdminFromCloud();
+        document.getElementById('clearLocalCacheBtn').onclick = clearLocalIdentity;
+        document.getElementById('adminPanelWrapper').style.display = 'none';
+    }
+    
+    init();
+</script>
+</body>
+</html>
